@@ -57,7 +57,7 @@ class Zon:
     def __init__(self):
         self.zone_type = None
         self.width = 0
-        self.height = 0
+        self.length = 0
         self.grid_count = 0
         self.grid_size = 0.0
         self.start_position = Vector2()
@@ -101,22 +101,21 @@ class Zon:
                 if block_type == BlockType.Info:
                     self.zone_type = read_i32(f)
                     self.width = read_i32(f)
-                    self.height = read_i32(f)
+                    self.length = read_i32(f)
                     self.grid_count = read_i32(f)
                     self.grid_size = read_f32(f)
 
                     self.start_position.x = read_i32(f)
                     self.start_position.y = read_i32(f)
-
-                    for w in range(self.width):
-                        r = []
-                        for h in range(self.height):
+                    
+                    self.positions = list_2d(self.width, self.length)
+                    for y in range(self.width):
+                        for x in range(self.length):
                             p = Position()
                             p.is_used = read_bool(f)
                             p.position.x = read_f32(f)
                             p.position.y = read_f32(f)
-                            r.append(p)
-                        self.positions.append(r)
+                            self.positions[y][x] = p
 
                 elif block_type == BlockType.Spawns:
                     spawn_count = read_i32(f)

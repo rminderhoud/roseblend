@@ -9,7 +9,8 @@ bl_info = {
 
 if "bpy" in locals():
     import importlib
-    importlib.reload(import_map)
+    if "import_map" in locals():
+        importlib.reload(import_map)
 else:
     from .import_map import ImportMap
 
@@ -24,7 +25,7 @@ def register():
     bpy.types.INFO_MT_file_import.append(menu)
 
 def unregister():
-    blp.utils.unregister_class(ImportMap)
+    bpy.utils.unregister_class(ImportMap)
     bpy.types.INFO_MT_file_import.remove(menu)
 
 

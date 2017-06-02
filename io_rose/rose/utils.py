@@ -41,3 +41,6 @@ def read_str(f):
     return bstring.decode("EUC-KR")
 
 
+def list_2d(width, length, default=None):
+    """ Create a 2-dimensional list of width x length """
+    return [[default] * width for i in range(length)]

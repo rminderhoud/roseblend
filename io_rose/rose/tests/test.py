@@ -14,9 +14,9 @@ class RoseTests(unittest.TestCase):
         h.load(him_file)
 
         self.assertEqual(h.width, 65)
-        self.assertEqual(h.height, 65)
+        self.assertEqual(h.length, 65)
         self.assertEqual(h.grid_count, 4)
-        self.assertEqual(h.grid_size, 250.0)
+        self.assertEqual(h.patch_scale, 250.0)
 
         self.assertEqual(len(h.heights), 65)
         self.assertEqual(int(h.max_height), 8234)
@@ -35,7 +35,7 @@ class RoseTests(unittest.TestCase):
         
         self.assertEqual(z.zone_type, ZoneType.BoatVillage)
         self.assertEqual(z.width, 64)
-        self.assertEqual(z.height, 64)
+        self.assertEqual(z.length, 64)
         self.assertEqual(z.grid_count, 4)
         self.assertEqual(z.grid_size, 250.0)
         

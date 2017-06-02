@@ -9,9 +9,9 @@ class Patch:
 class Him:
     def __init__(self):
         self.width = 0
-        self.height = 0
+        self.length = 0
         self.grid_count = 0
-        self.grid_size = 0.0
+        self.patch_scale = 0.0
 
         # Two dimensional array for height data
         self.heights = []
@@ -24,21 +24,19 @@ class Him:
     def load(self, path):
         with open(path, 'rb') as f:
             self.width = read_i32(f)
-            self.height = read_i32(f)
+            self.length = read_i32(f)
             self.grid_count = read_i32(f)
-            self.grid_size = read_f32(f)
-
-            for x in range(self.width):
-                row = []
-                for y in range(self.height):
+            self.patch_scale = read_f32(f)
+            
+            self.heights = list_2d(self.width, self.length, 0)
+            for y in range(self.length):
+                for x in range(self.width):
                     h = read_f32(f)
+                    self.heights[y][x] = h
 
                     if h > self.max_height: self.max_height = h
                     if h < self.min_height: self.min_height = h
                     
-                    row.append(h)
-
-                self.heights.append(row)
             
             name = read_bstr(f)
             patch_count = read_i32(f)
