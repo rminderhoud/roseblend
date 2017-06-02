@@ -1,12 +1,15 @@
 import math
 from .utils import *
 
-class Patch:
+class HimPatch:
     def __init__(self):
         minimum = 0
         maximum = 0
 
 class Him:
+    DEFAULT_WIDTH = 65
+    DEFAULT_LENGTH = 65
+
     def __init__(self):
         self.width = 0
         self.length = 0
@@ -45,7 +48,7 @@ class Him:
             for h in range(patch_sqrt):
                 row = []
                 for w in range(patch_sqrt):
-                    p = Patch()
+                    p = HimPatch()
                     p.maximum = read_f32(f)
                     p.minimum = read_f32(f)
 
@@ -55,7 +58,7 @@ class Him:
             
             quad_count = read_i32(f)
             for i in range(quad_count):
-                p = Patch()
+                p = HimPatch()
                 p.maximum = read_f32(f)
                 p.minimum = read_f32(f)
 

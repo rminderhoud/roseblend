@@ -1,6 +1,7 @@
 import os
 import unittest
 from rose.him import *
+from rose.til import *
 from rose.zon import *
 
 DIR = os.path.abspath(os.path.dirname(__file__))
@@ -27,6 +28,19 @@ class RoseTests(unittest.TestCase):
             self.assertEqual(len(patch), 16)
 
         self.assertEqual(len(h.quad_patches), 85)
+    
+    def test_til(self):
+        til_file = os.path.join(DATA_DIR, "30_30.TIL")
+
+        t = Til()
+        t.load(til_file)
+
+        self.assertEqual(t.width, 16)
+        self.assertEqual(t.length, 16)
+
+        self.assertEqual(len(t.tiles), 16)
+        for patch in t.tiles:
+            self.assertEqual(len(patch), 16)
 
     def test_zon(self):
         zon_file = os.path.join(DATA_DIR, "JPT01.ZON")

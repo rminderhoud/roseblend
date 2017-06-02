@@ -1,5 +1,10 @@
 import struct
 
+
+def list_2d(width, length, default=None):
+    """ Create a 2-dimensional list of width x length """
+    return [[default] * width for i in range(length)]
+
 class Vector2:
     def __init__(self):
         self.x = 0
@@ -10,6 +15,9 @@ class Vector3:
         self.x = 0
         self.y = 0
         self.z = 0
+
+def read_i8(f):
+    return struct.unpack("b", f.read(1))[0]
 
 def read_i32(f):
     return struct.unpack("<i", f.read(4))[0]
@@ -41,6 +49,3 @@ def read_str(f):
     return bstring.decode("EUC-KR")
 
 
-def list_2d(width, length, default=None):
-    """ Create a 2-dimensional list of width x length """
-    return [[default] * width for i in range(length)]
