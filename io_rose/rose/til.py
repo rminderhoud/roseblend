@@ -8,13 +8,16 @@ class TilPatch:
         self.tile = 0
 
 class Til:
-    def __init__(self):
+    def __init__(self, filepath=None):
         self.width = 0
         self.length = 0
         self.tiles = []
 
-    def load(self, path):
-        with open(path, 'rb') as f:
+        if filepath:
+            self.load(filepath)
+
+    def load(self, filepath):
+        with open(filepath, 'rb') as f:
             self.width = read_i32(f)
             self.length = read_i32(f)
             

@@ -10,9 +10,7 @@ DATA_DIR = os.path.join(DIR, "data")
 class RoseTests(unittest.TestCase):
     def test_him(self):
         him_file = os.path.join(DATA_DIR, "30_30.HIM")
-
-        h = Him()
-        h.load(him_file)
+        h = Him(him_file)
 
         self.assertEqual(h.width, 65)
         self.assertEqual(h.length, 65)
@@ -31,9 +29,7 @@ class RoseTests(unittest.TestCase):
     
     def test_til(self):
         til_file = os.path.join(DATA_DIR, "30_30.TIL")
-
-        t = Til()
-        t.load(til_file)
+        t = Til(til_file)
 
         self.assertEqual(t.width, 16)
         self.assertEqual(t.length, 16)
@@ -44,8 +40,7 @@ class RoseTests(unittest.TestCase):
 
     def test_zon(self):
         zon_file = os.path.join(DATA_DIR, "JPT01.ZON")
-        z = Zon()
-        z.load(zon_file)
+        z = Zon(zon_file)
         
         self.assertEqual(z.zone_type, ZoneType.BoatVillage)
         self.assertEqual(z.width, 64)

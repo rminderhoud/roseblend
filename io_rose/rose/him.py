@@ -7,25 +7,25 @@ class HimPatch:
         maximum = 0
 
 class Him:
-    DEFAULT_WIDTH = 65
-    DEFAULT_LENGTH = 65
-
-    def __init__(self):
+    def __init__(self, filepath=None):
         self.width = 0
         self.length = 0
         self.grid_count = 0
         self.patch_scale = 0.0
 
         # Two dimensional array for height data
-        self.heights = []
+        self.heights = [] 
         self.max_height = 0.0
         self.min_height = 0.0
         
         self.patches = []
         self.quad_patches = []
 
-    def load(self, path):
-        with open(path, 'rb') as f:
+        if filepath:
+            self.load(filepath)
+
+    def load(self, filepath):
+        with open(filepath, 'rb') as f:
             self.width = read_i32(f)
             self.length = read_i32(f)
             self.grid_count = read_i32(f)

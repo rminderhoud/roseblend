@@ -6,9 +6,12 @@ def list_2d(width, length, default=None):
     return [[default] * width for i in range(length)]
 
 class Vector2:
-    def __init__(self):
-        self.x = 0
-        self.y = 0
+    def __init__(self, x=0, y=0):
+        self.x = x
+        self.y = y
+
+    def __repr__(self):
+        return "Vector2({},{})".format(self.x, self.y)
 
 class Vector3:
     def __init__(self):

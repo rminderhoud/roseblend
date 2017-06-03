@@ -54,7 +54,7 @@ class Tile:
         self.tile_type = 0
 
 class Zon:
-    def __init__(self):
+    def __init__(self, filepath=None):
         self.zone_type = None
         self.width = 0
         self.length = 0
@@ -83,6 +83,9 @@ class Zon:
         self.industrial_consumption = 50
         self.medicine_consumption = 50
         self.food_consumption = 50
+
+        if filepath:
+            self.load(filepath)
     
     def __repr__(self):
         return "{} zone".format(self.zone_type)
