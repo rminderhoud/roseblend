@@ -87,11 +87,6 @@ class ImportMap(bpy.types.Operator, ImportHelper):
 
             length += cur_length
         
-        # Create our object and mesh
-        bpy.ops.object.add(type='MESH')
-        terrain_obj = bpy.context.object
-        terrain_mesh = terrain_obj.data
-        
         vertices = []
         edges = []
         faces = []
@@ -121,7 +116,7 @@ class ImportMap(bpy.types.Operator, ImportHelper):
                             edges += ((v1,v2), (v2,v3), (v3,v4), (v4,v1))
                             faces.append((v1,v2,v3,v4))
         
-        # Generate edges/faces inbetween each HIM tile (counter-clockwise)
+        # Generate edges/faces inbetween each HIM tile
         for y in range(him_y_count):
             for x in range(him_x_count):
                 him = him_tiles[y][x]
@@ -139,9 +134,9 @@ class ImportMap(bpy.types.Operator, ImportHelper):
                             if is_x_edge_vertex:
                                 next_him = him_tiles[y][x+1]
                                 v1 = him.indices[vy][vx]
-                                v2 = him.indices[vy+1][vx]
+                                v2 = next_him.indices[vy][0]
                                 v3 = next_him.indices[vy+1][0]
-                                v4 = next_him.indices[vy][0]
+                                v4 = him.indices[vy+1][vx]
                                 edges += ((v1,v2), (v2,v3), (v3,v4), (v4,v1))
                                 faces.append((v1,v2,v3,v4))
                         
@@ -162,12 +157,17 @@ class ImportMap(bpy.types.Operator, ImportHelper):
                                 down_him = him_tiles[y+1][x]
 
                                 v1 = him.indices[vy][vx]
-                                v2 = down_him.indices[0][down_him.width-1]
+                                v2 = right_him.indices[diag_him.length-1][0]
                                 v3 = diag_him.indices[0][0]
-                                v4 = right_him.indices[diag_him.length-1][0]
+                                v4 = down_him.indices[0][down_him.width-1]
                                 edges += ((v1,v2), (v2,v3), (v3,v4), (v4,v1))
                                 faces.append((v1,v2,v3,v4))
                             
+        
+        # Create our object and mesh
+        bpy.ops.object.add(type='MESH')
+        terrain_obj = bpy.context.object
+        terrain_mesh = terrain_obj.data
         
         terrain_mesh.from_pydata(vertices, edges, faces)
         terrain_mesh.update()
