@@ -81,9 +81,6 @@ class ImportMap(bpy.types.Operator, ImportHelper):
             til = Til(til_file)
             # ifo = Ifo(ifo_file)
 
-            # Stores vertex indices
-            him.indices = list_2d(him.width, him.length)
-            
             tiles.indices[norm_y][norm_x] = list_2d(him.width, him.length)
             tiles.hims[norm_y][norm_x] = him
             tiles.tils[norm_y][norm_x] = til
@@ -121,12 +118,10 @@ class ImportMap(bpy.types.Operator, ImportHelper):
                 
                 for vy in range(him.length):
                     for vx in range(him.width):
-                        # Create vertices
                         vz = him.heights[vy][vx] / him.patch_scale
-                        vertices.append((vx+offset_x,vy+offset_y,vz))
+                        vertices.append((vx+offset_x,-(vy+offset_y),vz))
                         
                         vi = len(vertices) - 1
-                        him.indices[vy][vx] = vi
                         indices[vy][vx] = vi
 
                         if vx < him.width -1 and vy < him.length - 1:
