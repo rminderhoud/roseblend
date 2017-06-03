@@ -56,8 +56,6 @@ class ImportMap(bpy.types.Operator, ImportHelper):
     
         # Allocate space for our lists
         him_tiles = list_2d(him_x_count, him_y_count)
-        
-        # Sort our him files into 2d array
         for file, x, y in him_coords:
             # Calculate relative offset for this tile
             normalized_x = x - him_min_x
@@ -66,7 +64,28 @@ class ImportMap(bpy.types.Operator, ImportHelper):
             him = Him()
             him.load(file)
             
+            # Stores vertex indices
+            him.indices = list_2d(him.width, him.length)
+
             him_tiles[normalized_y][normalized_x] = him
+        
+        # Store our tile offsets
+        him_offsets = list_2d(him_x_count, him_y_count)
+        length, cur_length = 0, 0
+        for y in range(him_y_count):
+            width = 0
+            for x in range(him_x_count):
+                him = him_tiles[y][x]
+
+                offset = Vector2()
+                offset.x = width
+                offset.y = length
+                him_offsets[y][x] = offset
+
+                width += him.width
+                cur_length = him.length
+
+            length += cur_length
         
         # Create our object and mesh
         bpy.ops.object.add(type='MESH')
@@ -74,26 +93,83 @@ class ImportMap(bpy.types.Operator, ImportHelper):
         terrain_mesh = terrain_obj.data
         
         vertices = []
-        offset_x, offset_y = 0, 0
-
-        # Generate our vertices taking into account offsets
+        edges = []
+        faces = []
+        
+        # Generate mesh data (vertices/edges/faces) for each HIM tile (counter-clockwise)
         for y in range(him_y_count):
-            cur_length = 0
             for x in range(him_x_count):
                 him = him_tiles[y][x]
 
+                offset_x = him_offsets[y][x].x
+                offset_y = him_offsets[y][x].y
+                
                 for vy in range(him.length):
                     for vx in range(him.width):
+                        # Create vertices
                         vz = him.heights[vy][vx] / him.patch_scale
                         vertices.append((vx+offset_x,vy+offset_y,vz))
+                        
+                        vi = len(vertices) - 1
+                        him.indices[vy][vx] = vi
+
+                        if vx < him.width -1 and vy < him.length - 1:
+                            v1 = vi
+                            v2 = vi + 1
+                            v3 = vi + 1 + him.width
+                            v4 = vi + him.width
+                            edges += ((v1,v2), (v2,v3), (v3,v4), (v4,v1))
+                            faces.append((v1,v2,v3,v4))
+        
+        # Generate edges/faces inbetween each HIM tile (counter-clockwise)
+        for y in range(him_y_count):
+            for x in range(him_x_count):
+                him = him_tiles[y][x]
                 
-                offset_x += him.width
-                cur_length = him.length
+                is_x_edge = (x == him_x_count - 1)
+                is_y_edge = (y == him_y_count - 1)
 
-            offset_x = 0
-            offset_y += him.length
+                for vy in range(him.length):
+                    for vx in range(him.width):
+                        is_x_edge_vertex = (vx == him.width - 1) and (vy < him.length - 1)
+                        is_y_edge_vertex = (vx < him.width - 1) and (vy == him.length - 1)
+                        is_corner_vertex = (vx == him.width - 1) and (vy == him.length - 1)
 
-        terrain_mesh.from_pydata(vertices, [], [])
+                        if not is_x_edge:
+                            if is_x_edge_vertex:
+                                next_him = him_tiles[y][x+1]
+                                v1 = him.indices[vy][vx]
+                                v2 = him.indices[vy+1][vx]
+                                v3 = next_him.indices[vy+1][0]
+                                v4 = next_him.indices[vy][0]
+                                edges += ((v1,v2), (v2,v3), (v3,v4), (v4,v1))
+                                faces.append((v1,v2,v3,v4))
+                        
+                        if not is_y_edge:
+                            if is_y_edge_vertex:
+                                next_him = him_tiles[y+1][x]
+                                v1 = him.indices[vy][vx]
+                                v2 = him.indices[vy][vx+1]
+                                v3 = next_him.indices[0][vx+1]
+                                v4 = next_him.indices[0][vx]
+                                edges += ((v1,v2), (v2,v3), (v3,v4), (v4,v1))
+                                faces.append((v1,v2,v3,v4))
+
+                        if not is_x_edge and not is_y_edge:
+                            if is_corner_vertex:
+                                right_him = him_tiles[y][x+1]
+                                diag_him = him_tiles[y+1][x+1]
+                                down_him = him_tiles[y+1][x]
+
+                                v1 = him.indices[vy][vx]
+                                v2 = down_him.indices[0][down_him.width-1]
+                                v3 = diag_him.indices[0][0]
+                                v4 = right_him.indices[diag_him.length-1][0]
+                                edges += ((v1,v2), (v2,v3), (v3,v4), (v4,v1))
+                                faces.append((v1,v2,v3,v4))
+                            
+        
+        terrain_mesh.from_pydata(vertices, edges, faces)
         terrain_mesh.update()
 
         return {"FINISHED"}
