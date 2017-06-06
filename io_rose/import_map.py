@@ -113,6 +113,10 @@ class ImportMap(bpy.types.Operator, ImportHelper):
             for x in range(chunks.area.x):
                 him = chunks.hims[y][x]
 
+                c_offset = Vector2() 
+                c_offset.x = chunks.offsets[y][x].x
+                c_offset.y = chunks.offsets[y][x].y
+
                 # Make patches
                 p_count = Vector2()
                 p_count.x = int((him.width - 1) / him.grid_count)
@@ -122,9 +126,6 @@ class ImportMap(bpy.types.Operator, ImportHelper):
                 p_size.x = int((him.width - 1) / p_count.x)
                 p_size.y = int((him.length - 1) / p_count.y)
                 
-                p_offset = Vector2() 
-                p_offset.x = chunks.offsets[y][x].x
-                p_offset.y = chunks.offsets[y][x].y
                 
                 # Generate mesh data for each patch in chunk
                 for py in range(0, him.length - p_size.y, p_size.y):
@@ -150,15 +151,17 @@ class ImportMap(bpy.types.Operator, ImportHelper):
                                     p_edges += ((v3,v4),(v4,v1))
                                     p_faces.append((v1,v2,v3,v4))
                         
-                        p_mesh_name = "tmesh_{}_{}".format(px, py)
-                        p_obj_name = "terr_{}_{}".format(px,py)
+                        p_offset = Vector2(px+c_offset.x, py+c_offset.y)
+ 
+                        p_mesh_name = "tmesh_{}_{}_{}_{}".format(x, y, px, py)
+                        p_obj_name = "terr_{}_{}_{}_{}".format(x, y, px, py)
 
                         p_mesh = bpy.data.meshes.new(p_mesh_name)
                         p_mesh.from_pydata(p_verts, p_edges, p_faces)
 
                         p_object = bpy.data.objects.new(p_obj_name, p_mesh)
                         p_object.hide_select = True
-                        p_object.location = (px+p_offset.x, py+p_offset.y, 0.0)
+                        p_object.location = (p_offset.x, p_offset.y, 0.0)
                         p_object.parent = terrain_obj
 
                         bpy.context.scene.objects.link(p_object)
