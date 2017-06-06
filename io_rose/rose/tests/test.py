@@ -15,7 +15,7 @@ class RoseTests(unittest.TestCase):
         self.assertEqual(h.width, 65)
         self.assertEqual(h.length, 65)
         self.assertEqual(h.grid_count, 4)
-        self.assertEqual(h.patch_scale, 250.0)
+        self.assertEqual(h.size, 250.0)
 
         self.assertEqual(len(h.heights), 65)
         self.assertEqual(int(h.max_height), 8234)
