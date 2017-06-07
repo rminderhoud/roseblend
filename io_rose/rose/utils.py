@@ -1,3 +1,4 @@
+import os
 import struct
 
 
@@ -12,6 +13,9 @@ class Vector2:
 
     def __repr__(self):
         return "Vector2({},{})".format(self.x, self.y)
+    
+    def values(self):
+        return (self.x, self.y)
 
 class Vector3:
     def __init__(self):
@@ -50,5 +54,9 @@ def read_str(f):
         else:
             bstring += byte
     return bstring.decode("EUC-KR")
+
+def from_rose_path(path_string):
+    """ Helper function for converting from Rose path string to os path """
+    return os.path.join(*[x.upper() for x in path_string.split("\\")])
 
 

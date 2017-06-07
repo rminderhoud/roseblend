@@ -56,6 +56,9 @@ class RoseTests(unittest.TestCase):
         self.assertEqual(len(z.textures), 49)
         self.assertEqual(len(z.tiles), 224)
         
+        for t in z.tiles:
+            print(t.rotation)
+
         self.assertEqual(z.name, "0")
         self.assertEqual(z.is_underground, False)
         self.assertEqual(z.background_music_path, "button1")
