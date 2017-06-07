@@ -11,7 +11,7 @@ class Him:
         self.width = 0
         self.length = 0
         self.grid_count = 0
-        self.size = 0.0
+        self.patch_scale = 0.0
 
         # Two dimensional array for height data
         self.heights = [] 
@@ -29,7 +29,7 @@ class Him:
             self.width = read_i32(f)
             self.length = read_i32(f)
             self.grid_count = read_i32(f)
-            self.size = read_f32(f)
+            self.patch_scale = read_f32(f)
             
             self.heights = list_2d(self.width, self.length, 0)
             for y in range(self.length):
