@@ -3,6 +3,7 @@ A [Blender](https://blender.org) add-on for importing ROSE Online 3D assets
 
 ## Features
 * Map import (only heightmaps)[WIP]
+* ROSE Mesh Import (ZMS)
 
 ## Installation
 Copy the `io_rose` directory into your blender `scripts/addons` directory.
@@ -14,5 +15,4 @@ Activate the plugin by opening blender and navigating to `File > User Preference
 
 ## Development
 ### Testing
-- Make sure `io_rose/rose` is in PYTHONPATH
-- `python3 -m unittest discover io_rose/rose/tests`
+- `python3 -m unittest discover tests`

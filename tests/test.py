@@ -1,11 +1,18 @@
 import os
+import sys
 import unittest
-from rose.him import *
-from rose.til import *
-from rose.zon import *
 
 DIR = os.path.abspath(os.path.dirname(__file__))
+ROOT_DIR = os.path.dirname(DIR)
 DATA_DIR = os.path.join(DIR, "data")
+
+# Manually manipulate path so avoid `bpy` imports in `io_rose` module
+sys.path.append(os.path.join(ROOT_DIR, "io_rose"))
+
+from rose.him import *
+from rose.til import *
+from rose.zms import *
+from rose.zon import *
 
 class RoseTests(unittest.TestCase):
     def test_him(self):
@@ -37,6 +44,51 @@ class RoseTests(unittest.TestCase):
         self.assertEqual(len(t.tiles), 16)
         for patch in t.tiles:
             self.assertEqual(len(patch), 16)
+    
+    def test_zms(self):
+        zms7 = os.path.join(DATA_DIR, "FACE1_00100.ZMS")
+        zms = ZMS(zms7)
+
+        self.assertEqual(zms.identifier, "ZMS0007")
+
+        self.assertEqual(zms.flags, 134)
+        self.assertEqual(zms.positions_enabled(), True)
+        self.assertEqual(zms.normals_enabled(), True)
+        self.assertEqual(zms.bones_enabled(), False)
+        self.assertEqual(zms.tangents_enabled(), False)
+        self.assertEqual(zms.uv1_enabled(), True)
+        self.assertEqual(zms.uv2_enabled(), False)
+        self.assertEqual(zms.uv3_enabled(), False)
+        self.assertEqual(zms.uv4_enabled(), False)
+        
+        self.assertEqual(len(zms.vertices), 183)
+        self.assertEqual(len(zms.indices), 292)
+        self.assertEqual(len(zms.bones), 0)
+        self.assertEqual(len(zms.materials), 3)
+        self.assertEqual(len(zms.strips), 0)
+        self.assertEqual(zms.pool, 0)
+
+        zms8 = os.path.join(DATA_DIR, "BODY1_00100.ZMS")
+        zms = ZMS(zms8)
+
+        self.assertEqual(zms.identifier, "ZMS0008")
+
+        self.assertEqual(zms.flags, 182)
+        self.assertEqual(zms.positions_enabled(), True)
+        self.assertEqual(zms.normals_enabled(), True)
+        self.assertEqual(zms.bones_enabled(), True)
+        self.assertEqual(zms.tangents_enabled(), False)
+        self.assertEqual(zms.uv1_enabled(), True)
+        self.assertEqual(zms.uv2_enabled(), False)
+        self.assertEqual(zms.uv3_enabled(), False)
+        self.assertEqual(zms.uv4_enabled(), False)
+        
+        self.assertEqual(len(zms.vertices), 175)
+        self.assertEqual(len(zms.indices), 258)
+        self.assertEqual(len(zms.bones), 12)
+        self.assertEqual(len(zms.materials), 0)
+        self.assertEqual(len(zms.strips), 474)
+        self.assertEqual(zms.pool, 0)
 
     def test_zon(self):
         zon_file = os.path.join(DATA_DIR, "JPT01.ZON")
