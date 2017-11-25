@@ -11,6 +11,7 @@ sys.path.append(os.path.join(ROOT_DIR, "io_rose"))
 
 from rose.him import *
 from rose.til import *
+from rose.zmd import *
 from rose.zms import *
 from rose.zon import *
 
@@ -45,6 +46,12 @@ class RoseTests(unittest.TestCase):
         for patch in t.tiles:
             self.assertEqual(len(patch), 16)
     
+    def test_zmd(self):
+        zmd_file = os.path.join(DATA_DIR, "MALE.ZMD")
+        zmd = ZMD(zmd_file)
+
+        self.assertEqual(len(zmd.bones), 21)
+
     def test_zms(self):
         zms7 = os.path.join(DATA_DIR, "FACE1_00100.ZMS")
         zms = ZMS(zms7)

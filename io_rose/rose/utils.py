@@ -6,6 +6,22 @@ def list_2d(width, length, default=None):
     """ Create a 2-dimensional list of width x length """
     return [[default] * width for i in range(length)]
 
+class Quat:
+    def __init__(self, x=0.0, y=0.0, z=0.0, w=1.0):
+        self.x = x
+        self.y = y
+        self.z = z
+        self.w = w
+
+    def __repr__(self):
+        return "Quat({},{},{},{})".format(self.x, self.y, self.z, self.w)
+
+    def as_tuple(self, w_first=False):
+        if w_first:
+            return (self.w, self.x, self.y, self.z)
+
+        return (self.x, self.y, self.z, self.w)
+
 class Vector2:
     def __init__(self, x=0.0, y=0.0):
         self.x = x
@@ -13,6 +29,9 @@ class Vector2:
 
     def __repr__(self):
         return "Vector2({},{})".format(self.x, self.y)
+
+    def as_tuple(self):
+        return (self.x, self.y)
 
 class Vector3:
     def __init__(self, x=0.0, y=0.0, z=0.0):
@@ -23,14 +42,23 @@ class Vector3:
     def __repr__(self):
         return "Vector3({},{},{}".format(self.x, self.y, self.z)
 
+    def scalar(self, o):
+        return Vector3(self.x * o, self.y * o, self.z * o)
+
+    def as_tuple(self):
+        return (self.x, self.y, self.z)
+
 class Color3:
     def __init__(self, r=0, g=0, b=0):
         self.r = r
         self.g = g
         self.b = b
-    
+
     def __repr__(self):
         return "Color({},{},{},{})".format(self.r, self.g, self.b)
+
+    def as_tuple(self):
+        return (self.r, self.g, self.b)
 
 class Color4:
     def __init__(self, r=0, g=0, b=0, a=0):
@@ -41,6 +69,9 @@ class Color4:
 
     def __repr__(self):
         return "Color({},{},{},{})".format(self.r, self.g, self.b, self.a)
+
+    def as_tuple(self):
+        return (self.r, self.g, self.b, self.a)
 
 #-- Signed integers
 def read_i8(f):
@@ -96,6 +127,11 @@ def read_str(f, encoding=DEFAULT_ENCODING):
             bstring += byte
     return bstring.decode(encoding)
 
+def read_fstr(f, length, encoding=DEFAULT_ENCODING):
+    """ Read fixed-length string """
+    bstring = f.read(length)
+    return bstring.decode(encoding)
+
 #-- Misc
 def read_bool(f):
     return struct.unpack("?", f.read(1))[0]
@@ -124,6 +160,20 @@ def read_list_f32(f, n):
     for i in range(n):
         a.append(read_f32(f))
     return a
+
+def read_quat_wxyz(f):
+    w = read_f32(f)
+    x = read_f32(f)
+    y = read_f32(f)
+    z = read_f32(f)
+    return Quat(x,y,z,w)
+
+def read_quat(f):
+    x = read_f32(f)
+    y = read_f32(f)
+    z = read_f32(f)
+    w = read_f32(f)
+    return Quat(x,y,z,w)
 
 def read_vector2_f32(f):
     x = read_f32(f)
